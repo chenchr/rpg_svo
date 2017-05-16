@@ -41,6 +41,7 @@ void getWarpMatrixAffine(
     Matrix2d& A_cur_ref)
 {
   // Compute affine warp matrix A_ref_cur
+  // TODO what is the influence of halfpatch_size, why calculate step size of halfpatch_size and them divide it ?
   const int halfpatch_size = 5;
   const Vector3d xyz_ref(f_ref*depth_ref);
   Vector3d xyz_du_ref(cam_ref.cam2world(px_ref + Vector2d(halfpatch_size,0)*(1<<level_ref)));
@@ -60,6 +61,9 @@ int getBestSearchLevel(
 {
   // Compute patch level in other image
   int search_level = 0;
+  /// the matrix A_cur_ref transform deviation of pixel in ref_frame to cur_frame, we seek to find a level which changes
+  /// of pixer in ref_frame do not incur too much pixel deviation in cur_frame. the determinant, which is the multiplication
+  /// of eigenvalue, is a good indicator of this effect.
   double D = A_cur_ref.determinant();
   while(D > 3.0 && search_level < max_level)
   {

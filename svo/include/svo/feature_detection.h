@@ -74,6 +74,7 @@ protected:
 
   void resetGrid();
 
+  /// get the index in grid_occupancy_
   inline int getCellIndex(int x, int y, int level)
   {
     const int scale = (1<<level);

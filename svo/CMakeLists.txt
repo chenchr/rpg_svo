@@ -2,8 +2,8 @@
 # user build settings
 
 SET(TRACE TRUE)
-SET(HAVE_G2O FALSE) 
-SET(USE_ROS TRUE) # Set FALSE if you want to build this package without Catkin
+SET(HAVE_G2O TRUE)
+SET(USE_ROS FALSE) # Set FALSE if you want to build this package without Catkin
 SET(DEBUG_OUTPUT FALSE) # Only relevant if build without ROS
 
 ################################################################################
@@ -148,3 +148,5 @@ TARGET_LINK_LIBRARIES(test_sparse_img_align svo)
 
 ADD_EXECUTABLE(test_pose_optimizer test/test_pose_optimizer.cpp)
 TARGET_LINK_LIBRARIES(test_pose_optimizer svo) 
+
+message("cxx_flags: ")

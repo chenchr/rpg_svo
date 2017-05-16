@@ -91,9 +91,13 @@ void Point::initNormal()
   assert(ftr->frame != NULL);
   normal_ = ftr->frame->T_f_w_.rotation_matrix().transpose()*(-ftr->f);
   normal_information_ = DiagonalMatrix<double,3,3>(pow(20/(pos_-ftr->frame->pos()).norm(),2), 1.0, 1.0);
+  // TODO: why that can be used as information?
   normal_set_ = true;
 }
 
+    /// given a position pos, we have a view direction from pos to this point.
+    /// among all the frame that observes this point, we find a frame closest to that view direction.
+    /// by calculating the cos of direction vector
 bool Point::getCloseViewObs(const Vector3d& framepos, Feature*& ftr) const
 {
   // TODO: get frame with same point of view AND same pyramid level!
@@ -135,7 +139,7 @@ void Point::optimize(const size_t n_iter)
       Matrix23d J;
       const Vector3d p_in_f((*it)->frame->T_f_w_ * pos_);
       Point::jacobian_xyz2uv(p_in_f, (*it)->frame->T_f_w_.rotation_matrix(), J);
-      const Vector2d e(vk::project2d((*it)->f) - vk::project2d(p_in_f));
+      const Vector2d e(vk::project2d((*it)->f) - vk::project2d(p_in_f));   /// the form of residual determine the form of jacobian. in point.h line 105
       new_chi2 += e.squaredNorm();
       A.noalias() += J.transpose() * J;
       b.noalias() -= J.transpose() * e;

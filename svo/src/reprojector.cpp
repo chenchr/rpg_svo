@@ -98,7 +98,7 @@ void Reprojector::reprojectMap(
       if((*it_ftr)->point->last_projected_kf_id_ == frame->id_)
         continue;
       (*it_ftr)->point->last_projected_kf_id_ = frame->id_;
-      if(reprojectPoint(frame, (*it_ftr)->point))
+      if(reprojectPoint(frame, (*it_ftr)->point))   ///in function reprojectPoint(_1, _2) it store in which grid cell the point fall
         overlap_kfs.back().second++;
     }
   }
@@ -211,6 +211,9 @@ bool Reprojector::reprojectPoint(FramePtr frame, Point* point)
     const int k = static_cast<int>(px[1]/grid_.cell_size)*grid_.grid_n_cols
                 + static_cast<int>(px[0]/grid_.cell_size);
     grid_.cells.at(k)->push_back(Candidate(point, px));
+    // TODO the order of cells is random, however, the point in the cell list is not randomized, we quit as soon as one
+    // point is found. should we choose the point that satisfies some requirement to be the point represents the cell ?
+    // since those matches is used in bundle adjustment, maybe we should choose the point that most beneficial to the result ?
     return true;
   }
   return false;

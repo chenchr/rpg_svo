@@ -45,7 +45,7 @@ void AbstractDetector::setExistingFeatures(const Features& fts)
     grid_occupancy_.at(
         static_cast<int>(i->px[1]/cell_size_)*grid_n_cols_
         + static_cast<int>(i->px[0]/cell_size_)) = true;
-  });
+  });  /// the last parameter is a lambda
 }
 
 void AbstractDetector::setGridOccpuancy(const Vector2d& px)
@@ -96,7 +96,7 @@ void FastDetector::detect(
       fast::fast_xy& xy = fast_corners.at(*it);
       const int k = static_cast<int>((xy.y*scale)/cell_size_)*grid_n_cols_
                   + static_cast<int>((xy.x*scale)/cell_size_);
-      if(grid_occupancy_[k])
+      if(grid_occupancy_[k]) /// have something to do with depth filter
         continue;
       const float score = vk::shiTomasiScore(img_pyr[L], xy.x, xy.y);
       if(score > corners.at(k).score)

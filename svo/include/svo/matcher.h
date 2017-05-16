@@ -35,6 +35,9 @@ class Feature;
 /// Warp a patch from the reference view to the current view.
 namespace warp {
 
+/// given two frame with pose and a map point with pose too, we can calculate the transform, and them know how the pixel
+/// moves away from the point in cur_frame when the pixel move away from the point that map point projects to ref_frame
+/// assuming that in the ref_frame all pixels within the patch have the same depth.
 void getWarpMatrixAffine(
     const vk::AbstractCamera& cam_ref,
     const vk::AbstractCamera& cam_cur,

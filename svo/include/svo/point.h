@@ -65,7 +65,7 @@ public:
   ~Point();
 
   /// Add a reference to a frame.
-  void addFrameRef(Feature* ftr);
+  void addFrameRef(Feature* ftr);  /// the class feature has pointer to frame
 
   /// Remove reference to a frame.
   bool deleteFrameRef(Frame* frame);
@@ -78,6 +78,9 @@ public:
 
   /// Get Frame with similar viewpoint.
   bool getCloseViewObs(const Vector3d& pos, Feature*& obs) const;
+  /// given a position pos, we have a view direction from pos to this point.
+  /// among all the frame that observes this point, we find a frame closest to that view direction.
+  /// by calculating the cos of direction vector
 
   /// Get number of observations.
   inline size_t nRefs() const { return obs_.size(); }
@@ -99,7 +102,7 @@ public:
     point_jac(1, 0) = 0.0;
     point_jac(1, 1) = z_inv;
     point_jac(1, 2) = -p_in_f[1] * z_inv_sq;
-    point_jac = - point_jac * R_f_w;
+    point_jac = - point_jac * R_f_w;  /// see point.cpp line 142, is feature minus projected point, therefore jacobian multiplied by minus
   }
 };
 
