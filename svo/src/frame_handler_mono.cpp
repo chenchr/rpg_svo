@@ -44,6 +44,8 @@ void FrameHandlerMono::initialize()
   feature_detection::DetectorPtr feature_detector(
       new feature_detection::FastDetector(
           cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
+  /// non-static member functions have an implicit this parameter, the &map_.point_candidates_ tell the bind the
+  /// function newCandidatePoint in which MapPointCandidates class will be invoked
   DepthFilter::callback_t depth_filter_cb = boost::bind(
       &MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
   depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
@@ -197,8 +199,13 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   for(Features::iterator it=new_frame_->fts_.begin(); it!=new_frame_->fts_.end(); ++it)
     if((*it)->point != NULL)
       (*it)->point->addFrameRef(*it);
+  /// all the converged point are in the point_candidates_, the following code add the candidate
+  /// points observed in new_frame_.
   map_.point_candidates_.addCandidatePointToFrame(new_frame_);
 
+  /// if the frame is not a keyframe, svo omits the local ba, which is only done for keyframe,
+  /// in orbslam, it seems that every frame has local ba, maybe it can help the depth filter
+  /// to converge.
   // optional bundle adjustment
 #ifdef USE_BUNDLE_ADJUSTMENT
   if(Config::lobaNumIter() > 0)

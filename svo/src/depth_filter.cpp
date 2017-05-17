@@ -85,6 +85,7 @@ void DepthFilter::addFrame(FramePtr frame)
   {
     {
       lock_t lock(frame_queue_mut_);
+      /// max cache of frame for depth filter is 2
       if(frame_queue_.size() > 2)
         frame_queue_.pop();
       frame_queue_.push(frame);
@@ -174,7 +175,8 @@ void DepthFilter::updateSeedsLoop()
     {
       lock_t lock(frame_queue_mut_);
       while(frame_queue_.empty() && new_keyframe_set_ == false)
-        frame_queue_cond_.wait(lock);
+        frame_queue_cond_.wait(lock); /// program will halt here, instead of loop over while,
+                                      /// maybe it can safe compute resource.
       if(new_keyframe_set_)
       {
         new_keyframe_set_ = false;
@@ -204,6 +206,8 @@ void DepthFilter::updateSeeds(FramePtr frame)
 
   const double focal_length = frame->cam_->errorMultiplier2();
   double px_noise = 1.0;
+  /// here the author may assume that the feature locates at the center of image, to be more accurate
+  /// maybe can use law of cos ?
   double px_error_angle = atan(px_noise/(2.0*focal_length))*2.0; // law of chord (sehnensatz)
 
   while( it!=seeds_.end())
@@ -213,6 +217,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
       return;
 
     // check if seed is not already too old
+    /// whithin max_n_kfs frames this seed still can not converge, therefore drop it
     if((Seed::batch_counter - it->batch_id) > options_.max_n_kfs) {
       it = seeds_.erase(it);
       continue;
@@ -262,7 +267,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
     {
       assert(it->ftr->point == NULL); // TODO this should not happen anymore
       Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
-      Point* point = new Point(xyz_world, it->ftr);
+      Point* point = new Point(xyz_world, it->ftr); /// generate a candidate point for converged seed
       it->ftr->point = point;
       /* FIXME it is not threadsafe to add a feature to the frame here.
       if(frame->isKeyframe())

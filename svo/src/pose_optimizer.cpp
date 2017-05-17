@@ -52,7 +52,7 @@ void optimizeGaussNewton(
     Vector2d e = vk::project2d((*it)->f)
                - vk::project2d(frame->T_f_w_ * (*it)->point->pos_);
     e *= 1.0 / (1<<(*it)->level);
-    errors.push_back(e.norm());
+    errors.push_back(e.norm()); /// take in to account the level where the feature extracted
   }
   if(errors.empty())
     return;

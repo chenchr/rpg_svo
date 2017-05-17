@@ -96,7 +96,11 @@ void FastDetector::detect(
       fast::fast_xy& xy = fast_corners.at(*it);
       const int k = static_cast<int>((xy.y*scale)/cell_size_)*grid_n_cols_
                   + static_cast<int>((xy.x*scale)/cell_size_);
-      if(grid_occupancy_[k]) /// have something to do with depth filter
+      /// have something to do with depth filter
+      /// the other keyframes will have some point project in the current keyframe, which take up a grid,
+      /// therefore it's not necessary to use new feature. because it the former processFrame, reproject
+      /// cell, it have new a feature in the grid.
+      if(grid_occupancy_[k])
         continue;
       const float score = vk::shiTomasiScore(img_pyr[L], xy.x, xy.y);
       if(score > corners.at(k).score)
