@@ -150,4 +150,5 @@ TARGET_LINK_LIBRARIES(test_sparse_img_align svo)
 ADD_EXECUTABLE(test_pose_optimizer test/test_pose_optimizer.cpp)
 TARGET_LINK_LIBRARIES(test_pose_optimizer svo) 
 
-message("cxx_flags: ")
+ADD_EXECUTABLE(test_usbCamera test/test_usbCamera.cpp)
+TARGET_LINK_LIBRARIES(test_usbCamera svo)
