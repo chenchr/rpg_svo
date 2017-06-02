@@ -152,3 +152,6 @@ TARGET_LINK_LIBRARIES(test_pose_optimizer svo)
 
 ADD_EXECUTABLE(test_usbCamera test/test_usbCamera.cpp)
 TARGET_LINK_LIBRARIES(test_usbCamera svo)
+
+ADD_EXECUTABLE(test_tum test/test_tum.cpp)
+TARGET_LINK_LIBRARIES(test_tum svo)

@@ -60,11 +60,11 @@ Config::Config() :
     core_n_kfs(3),
     map_scale(1.0),
     grid_size(25),
-    init_min_disparity(50.0),
+    init_min_disparity(50.0), //跑tum这个要设置小点，5
     init_min_tracked(50),
     init_min_inliers(40),
     klt_max_level(4),
-    klt_min_level(2),
+    klt_min_level(0), //本来是2
     reproj_thresh(2.0),
     poseoptim_thresh(2.0),
     poseoptim_num_iter(10),
